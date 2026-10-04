@@ -1,0 +1,8 @@
+# VS Code Settings
+.vscode/
+
+# Executables & Compiled files
+*.exe
+*.out
+*.o
+*.obj
