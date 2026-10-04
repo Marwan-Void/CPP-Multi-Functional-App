@@ -610,14 +610,25 @@ void isNaN(){
 void trim(){
     welcome("trim");
     while(true){
-        string txt = msgInputStr("text to trim");
-        for(int i = 0; i < txt.length(); i++){
-            if(txt[i] == ' ') txt.erase(i, 1);
-            else break;
+        string txt = msgInputStr("text to trim"), 
+            chosenChar = msgInputStr("trim character"), 
+            position = msgInputStr("position (r/l/b)");
+
+        if(chosenChar.empty()) chosenChar = " ";
+        if(position.empty() || position.length() > 1) position = "b";
+        char trimChar = chosenChar[0];
+
+        if(position == "l" || position == "b"){
+            for(int i = 0; i < txt.length(); i++){
+                if(txt[i] == trimChar) txt.erase(i, 1);
+                else break;
+            }
         }
-        for(int i = txt.length(); i > 0; i--){
-            if(txt[i] == ' ') txt.erase(i, 1);
-            else break;
+        if(position == "r" || position == "b"){
+            for(int i = txt.length() - 1; i >= 0; i--){
+                if(txt[i] == trimChar) txt.erase(i, 1);
+                else break;
+            }
         }
         cout << "the result: \"" << txt << "\"\n";
         // ! be careful there's a bug here
