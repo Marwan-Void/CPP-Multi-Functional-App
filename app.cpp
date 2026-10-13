@@ -32,10 +32,15 @@ string msgInputStr(string msg){
     return inp;
 }
 
-string trim(string txt){
-    string result;
-    for(int i = 0; i < txt.length(); i++){
-        if(txt[i] != ' ') result += txt[i];
+string trimStr(string txt, char trimChar = ' '){
+    string result = txt;
+    for(int i = 0; i < result.length(); i++){
+        if(result[0] == trimChar) result.erase(i, 1);
+        else break;
+    } 
+    for(int i = result.length() - 1; i >= 0; i--){
+        if(result[0] == trimChar) result.erase(i, 1);
+        else break;
     } return result;
 }
 
@@ -111,6 +116,7 @@ void sumOfNumbers();
 void parseInt();
 void isNaN();
 void trim();
+void substr();
 int main(){
     vector<string> apps = {
         "break that loop (not an app)",
@@ -190,7 +196,8 @@ void stringApps(){
         "zfill",
         "string reverse",
         "isNaN",
-        "trim"
+        "trim",
+        "substring"
     };
     welcome("maths");
     while(true){
@@ -209,6 +216,7 @@ void stringApps(){
             case 5: stringReverse(); continue;
             case 6: isNaN(); continue;
             case 7: trim(); continue;
+            case 8: substr(); continue;
             default: cout << "invalid choice\n--------------\n"; continue;
         }
 
@@ -631,7 +639,32 @@ void trim(){
             }
         }
         cout << "the result: \"" << txt << "\"\n";
-        // ! be careful there's a bug here
+
+        bool status = checkAgain();
+        if(status){
+            cout << "--------------------\n";
+            continue;
+        } else {
+            cout << "k thx for using our app...\n\n";
+            break;
+        }
+    }
+}
+
+void substr(){
+    welcome("substring");
+    while(true){
+        string txt = msgInputStr("text"), result;
+        int start = msgInput("starting index"), end = msgInput("ending index");
+        if(txt.length() <= start) result = "not found";
+        else if(txt.length() < end) end = txt.length();
+
+        if(result != "not found"){
+            for(int i = start; i < end; i++){
+                result += txt[i];
+            }
+        }
+        cout << "the result: \"" << result << "\"\n";
 
         bool status = checkAgain();
         if(status){
