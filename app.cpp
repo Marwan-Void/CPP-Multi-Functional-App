@@ -117,6 +117,7 @@ void parseInt();
 void isNaN();
 void trim();
 void substr();
+void tempConvert();
 int main(){
     vector<string> apps = {
         "break that loop (not an app)",
@@ -157,7 +158,8 @@ void mathsApps(){
         "root calculator",
         "max or min number",
         "sum of the numbers",
-        "parse integer"
+        "parse integer",
+        "temperature converter"
     };
 
     welcome("maths");
@@ -177,6 +179,7 @@ void mathsApps(){
             case 5: maxOrMinNum(); continue;
             case 6: sumOfNumbers(); continue;
             case 7: parseInt(); continue;
+            case 8: tempConvert(); continue;
             default: cout << "invalid choice\n--------------\n"; continue;
         }
 
@@ -438,17 +441,21 @@ void zFill(){
     while(true){
         string txt = msgInputStr("text");
         int count = msgInput("count of fills");
-        string fill = msgInputStr("fill text"), position = msgInputStr("position of filling(a/b)");
+        string fill = msgInputStr("fill text"), position = msgInputStr("position of filling(pre/suf/both)");
 
         if(count < 0){
             count = 0;
             cout << "text after fill: " << txt << "\n";
         }
         if(fill.empty()) fill = "0";
-        if(position.empty()) position = "b";
+        if(position.empty()) position = "pre";
 
         for(int i = 0; i < count; i++){
-            if(position == "b") txt = fill + txt;
+            if(position == "pre") txt = fill + txt;
+            else if(position == "both"){
+                txt = fill + txt;
+                txt += fill;
+            }
             else txt += fill;
         }
 
@@ -654,17 +661,39 @@ void trim(){
 void substr(){
     welcome("substring");
     while(true){
-        string txt = msgInputStr("text"), result;
+        string txt = msgInputStr("text"), incEnd = msgInputStr("include end (y/n)"), result;
         int start = msgInput("starting index"), end = msgInput("ending index");
         if(txt.length() <= start) result = "not found";
         else if(txt.length() < end) end = txt.length();
+        if(incEnd.empty()) incEnd = "n"; 
 
         if(result != "not found"){
-            for(int i = start; i < end; i++){
+            for(int i = start; i < (incEnd == "y" ? end + 1 : end); i++){
                 result += txt[i];
             }
         }
         cout << "the result: \"" << result << "\"\n";
+
+        bool status = checkAgain();
+        if(status){
+            cout << "--------------------\n";
+            continue;
+        } else {
+            cout << "k thx for using our app...\n\n";
+            break;
+        }
+    }
+}
+
+void tempConvert(){
+    welcome("temperature converter");
+    while(true){
+        string from = msgInputStr("convert from (c/k)");
+        int degree = msgInput("degree");
+
+        if(from == "c") degree += 273;
+        else degree -= 273;
+        cout << "the result: " << degree << (from == "c" ? "K" : "C") << "\n";
 
         bool status = checkAgain();
         if(status){
