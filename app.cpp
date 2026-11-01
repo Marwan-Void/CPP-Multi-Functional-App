@@ -44,8 +44,16 @@ string trimStr(string txt, char trimChar = ' '){
     } return result;
 }
 
-int msgInput(string msg){
-    int inp;
+string parseInt(string txt){
+    string result = "";
+    for(int i = 0; i < txt.length(); i++){
+        if(txt[i] >= '0' && txt[i] <= '9') result += txt[i];
+    }
+    return result;
+}
+
+float msgInput(string msg){
+    float inp;
     cout << "enter the " << msg << ": ";
     cin >> inp;
     return inp;
@@ -113,11 +121,12 @@ void zFill();
 void stringReverse();
 void maxOrMinNum();
 void sumOfNumbers();
-void parseInt();
-void isNaN();
+void parseIntApp();
+void isNaNapp();
 void trim();
 void substr();
 void tempConvert();
+void degreeConvert();
 int main(){
     vector<string> apps = {
         "break that loop (not an app)",
@@ -159,7 +168,8 @@ void mathsApps(){
         "max or min number",
         "sum of the numbers",
         "parse integer",
-        "temperature converter"
+        "temperature converter",
+        "degree convert"
     };
 
     welcome("maths");
@@ -178,8 +188,9 @@ void mathsApps(){
             case 4: rootCalculator(); continue;
             case 5: maxOrMinNum(); continue;
             case 6: sumOfNumbers(); continue;
-            case 7: parseInt(); continue;
+            case 7: parseIntApp(); continue;
             case 8: tempConvert(); continue;
+            case 9: degreeConvert(); continue;
             default: cout << "invalid choice\n--------------\n"; continue;
         }
 
@@ -217,7 +228,7 @@ void stringApps(){
             case 3: repeatTxt(); continue;
             case 4: zFill(); continue;
             case 5: stringReverse(); continue;
-            case 6: isNaN(); continue;
+            case 6: isNaNapp(); continue;
             case 7: trim(); continue;
             case 8: substr(); continue;
             default: cout << "invalid choice\n--------------\n"; continue;
@@ -232,7 +243,7 @@ void stringApps(){
 
 void other(){
     vector<string> apps = {
-        "break that loop (not an app)"
+        "break that loop (not an app)",
     };
     welcome("other random");
     while(true){
@@ -257,27 +268,44 @@ void other(){
 void calculator(){
     welcome("calculator");
     while(true){
-        int num1 = msgInput("first number");
-        string op = msgInputStr("operator");
-        int num2 = msgInput("second number");
+        int result = 0;
+        bool first = true;
+        while(true){
+            string inp = parseInt(msgInputStr("number (enter any text to exit)"));
+            int num = 0;
+            if(inp.length() == 0){cout << "---------\n"; break;}
+            else num = stoi(inp);
 
-        cout << num1 << " " << op << " " << num2 << " = ";
-        if(op == "+"){
-            cout << num1 + num2;
-        } else if(op == "-"){
-            cout << num1 - num2;
-        } else if(op == "*"){
-            cout << num1 * num2;
-        } else if(op == "/"){
-            divideCalc(num1, num2, op);
-        } else if(op == "**" || op == "^" || op == "pow"){
-            cout << pow(num1, num2);
-        } else if(op == "%"){
-            divideCalc(num1, num2, op);
-        } else {
-            cout << "invalid operator";
+            string operation = msgInputStr("operator");
+            
+            if(operation == "+") result += num;
+            else if(operation == "-") result -= num;
+            else if(operation == "*" || operation == "x"){
+                if(result == 0 && first) result = 1;
+                result *= num;
+            }
+            else if(operation == "/"){
+                if(result == 0 && first) result = 1;
+                if(num != 0) result /= num;
+                else {
+                    cout << "can't divide by zero"; 
+                    break;
+                }
+            } else if(operation == "**" || operation == "^" || operation == "pow") result = pow(result, num);
+            else if(operation == "%"){
+                if(num != 0) result %= num;
+                else {
+                    cout << "can't divide by zero";
+                    break;
+                }
+            } else {
+                cout << "undefined operator";
+                break;
+            }
+            cout << "---------\n";
+            first = false;
         }
-        cout << "\n";
+        cout << "the result: " << result << "\n";
 
         bool status = checkAgain();
         if(status){
@@ -578,7 +606,7 @@ void sumOfNumbers(){
     }
 }
 
-void parseInt(){
+void parseIntApp(){
     welcome("parse integer");
     while(true){
         string txt = msgInputStr("text to parse"), result;
@@ -598,7 +626,7 @@ void parseInt(){
     }
 }
 
-void isNaN(){
+void isNaNapp(){
     welcome("isNaN");
     while(true){
         string txt = msgInputStr("text to check"), result = "Number";
@@ -688,12 +716,41 @@ void substr(){
 void tempConvert(){
     welcome("temperature converter");
     while(true){
-        string from = msgInputStr("convert from (c/k)");
+        string from = allLower(msgInputStr("convert from (c/k)"));
         int degree = msgInput("degree");
 
         if(from == "c") degree += 273;
-        else degree -= 273;
+        else if(from == "k") degree -= 273;
+        else {
+            cout << "invalid type\n";
+            continue;
+        }
         cout << "the result: " << degree << (from == "c" ? "K" : "C") << "\n";
+
+        bool status = checkAgain();
+        if(status){
+            cout << "--------------------\n";
+            continue;
+        } else {
+            cout << "k thx for using our app...\n\n";
+            break;
+        }
+    }
+}
+
+void degreeConvert(){
+    welcome("degree convert");
+    while(true){
+        string from = allLower(msgInputStr("convert from (d/r)"));
+        float degree = msgInput("degree");
+
+        if(from == "r") degree = 180 * degree / M_PI;
+        else if(from == "d") degree = M_PI * degree / 180;
+        else {
+            cout << "invalid type\n---------\n";
+            continue;
+        }
+        cout << "the result: " << degree << (from == "d" ? "R" : "D") << "\n";
 
         bool status = checkAgain();
         if(status){
