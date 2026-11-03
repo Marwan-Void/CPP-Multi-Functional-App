@@ -689,7 +689,8 @@ void trim(){
 void substr(){
     welcome("substring");
     while(true){
-        string txt = msgInputStr("text"), incEnd = msgInputStr("include end (y/n)"), result;
+        string txt = msgInputStr("text"), incEnd = msgInputStr("include end (y/n)"), 
+            countSpace = msgInputStr("include space (y/n)"), result;
         int start = msgInput("starting index"), end = msgInput("ending index");
         if(txt.length() <= start) result = "not found";
         else if(txt.length() < end) end = txt.length();
@@ -697,6 +698,7 @@ void substr(){
 
         if(result != "not found"){
             for(int i = start; i < (incEnd == "y" ? end + 1 : end); i++){
+                if(countSpace == "n" && txt[i] == ' ') end++;
                 result += txt[i];
             }
         }
