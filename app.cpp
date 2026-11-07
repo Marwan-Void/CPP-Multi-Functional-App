@@ -85,6 +85,9 @@ bool checkAgain(){
         }
     } return status;
 }
+bool found(vector<char> arr, char c){return find(arr.begin(), arr.end(), c) != arr.end();}
+bool found(vector<string> arr, string c){return find(arr.begin(), arr.end(), c) != arr.end();}
+bool found(vector<int> arr, int c){return find(arr.begin(), arr.end(), c) != arr.end();}
 
 void divideCalc(int num1, int num2, string op){
     if(num2 != 0){
@@ -796,28 +799,29 @@ void cleanStr(){
         } else if(system == 2){
             string number = msgInputStr("ability of returning numbers (y/n)"),
                 underscore = msgInputStr("ability of returning underscore (y/n)"),
-                space = msgInputStr("ability of returning space (y/n)");
-                // checkForException = msgInputStr("any other exception (y/n)");
-            // vector<char> exceptions = {};
-            // if(checkForException[0] == 'y'){
-            //     while(true){
-            //         exceptions.push_back(msgInputStr("\nexception character (enter one character only)")[0]);
-            //         string check = msgInputStr("any other exception (y/n)");
-            //         cout << "\n";
-            //         if(check[0] == 'n') break;
-            //     }
-            // }
+                space = msgInputStr("ability of returning space (y/n)"),
+                checkForException = msgInputStr("any other exception (y/n)");
+
+            vector<char> exceptions = {};
+            if(checkForException[0] == 'y'){
+                while(true){
+                    cout << "\n";
+                    exceptions.push_back(msgInputStr("exception character (enter one character only)")[0]);
+                    string check = msgInputStr("any other exception (y/n)");
+                    cout << "\n";
+                    if(check[0] == 'n') break;
+                }
+            }
 
             for(int i = 0; i < txt.length(); i++){
-                // if(find(exceptions.begin(), exceptions.end(), txt[i]) == exceptions.end()) continue;
-                if(
+                if(found(exceptions, txt[i])) continue;
+                else if(
                     (lower(txt[i]) >= 'a' && lower(txt[i]) <= 'z')
                     || (txt[i] == '_' && underscore[0] == 'y')
                     || (txt[i] >= '0' && txt[i] <= '9' && number[0] == 'y')
                     || (txt[i] == ' ' && space[0] == 'y')
                 ) result += txt[i];
             }
-            // * still working on a new feature
         }
         cout << "the result: \"" << result << "\"\n";
 
