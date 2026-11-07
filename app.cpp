@@ -127,6 +127,7 @@ void trim();
 void substr();
 void tempConvert();
 void degreeConvert();
+void cleanStr();
 int main(){
     vector<string> apps = {
         "break that loop (not an app)",
@@ -211,7 +212,8 @@ void stringApps(){
         "string reverse",
         "isNaN",
         "trim",
-        "substring"
+        "substring",
+        "clean string"
     };
     welcome("maths");
     while(true){
@@ -231,6 +233,7 @@ void stringApps(){
             case 6: isNaNapp(); continue;
             case 7: trim(); continue;
             case 8: substr(); continue;
+            case 9: cleanStr(); continue;
             default: cout << "invalid choice\n--------------\n"; continue;
         }
 
@@ -753,6 +756,70 @@ void degreeConvert(){
             continue;
         }
         cout << "the result: " << degree << (from == "d" ? "R" : "D") << "\n";
+
+        bool status = checkAgain();
+        if(status){
+            cout << "--------------------\n";
+            continue;
+        } else {
+            cout << "k thx for using our app...\n\n";
+            break;
+        }
+    }
+}
+
+void cleanStr(){
+    welcome("clean string");
+    while(true){
+        string txt = msgInputStr("text"), result;
+        vector<string> systemArr = {
+            "non of these (not a system)",
+            "return everything but not",
+            "return js normal characters and"
+        };
+
+        cout << "choose a system of them:\n";
+        for(int i = 0; i < systemArr.size(); i++){
+            cout << "[" << i << "] " << systemArr.at(i) << "\n";
+        }
+        int system = msgInput("number of your choice");
+        if(system > 2) system = 2;
+
+        if(system == 0){
+            cout << "k thx for using our app...\n\n";
+            break;
+        } else if(system == 1){
+            string exceptionChar = msgInputStr("exception character (enter one character only)");
+            for(int i = 0; i < txt.length(); i++){
+                if(txt[i] != exceptionChar[0]) result += txt[i];
+            }
+        } else if(system == 2){
+            string number = msgInputStr("ability of returning numbers (y/n)"),
+                underscore = msgInputStr("ability of returning underscore (y/n)"),
+                space = msgInputStr("ability of returning space (y/n)");
+                // checkForException = msgInputStr("any other exception (y/n)");
+            // vector<char> exceptions = {};
+            // if(checkForException[0] == 'y'){
+            //     while(true){
+            //         exceptions.push_back(msgInputStr("\nexception character (enter one character only)")[0]);
+            //         string check = msgInputStr("any other exception (y/n)");
+            //         cout << "\n";
+            //         if(check[0] == 'n') break;
+            //     }
+            // }
+
+            for(int i = 0; i < txt.length(); i++){
+                // if(find(exceptions.begin(), exceptions.end(), txt[i]) == exceptions.end()) continue;
+                if(
+                    (lower(txt[i]) >= 'a' && lower(txt[i]) <= 'z')
+                    || (txt[i] == '_' && underscore[0] == 'y')
+                    || (txt[i] >= '0' && txt[i] <= '9' && number[0] == 'y')
+                    || (txt[i] == ' ' && space[0] == 'y')
+                ) result += txt[i];
+            }
+            // * still working on a new feature
+        }
+        cout << "the result: \"" << result << "\"\n";
 
         bool status = checkAgain();
         if(status){
