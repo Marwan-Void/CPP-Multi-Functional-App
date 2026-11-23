@@ -6,6 +6,10 @@
 #include <cmath>
 #include <cctype>
 #include <algorithm>
+#include <map>
+#include <cstdlib>
+#include <stdexcept>
+#include <ctime>
 using namespace std;
 
 char lower(char c){return char(tolower(c));}
@@ -48,6 +52,26 @@ string parseInt(string txt){
     string result = "";
     for(int i = 0; i < txt.length(); i++){
         if(txt[i] >= '0' && txt[i] <= '9') result += txt[i];
+    }
+    return result;
+}
+
+vector<string> splitString(string txt, bool includeComma = false){
+    vector<string> result = {};
+    string textToAdd = "";
+    for(char ch : txt){
+        if(ch == ' ' || (!includeComma && ch == ',')){
+            if(!textToAdd.empty()){
+                result.push_back(textToAdd);
+                textToAdd.clear();
+            }
+        } else {
+            textToAdd += ch;
+        }
+    }
+
+    if(!textToAdd.empty()){
+        result.push_back(textToAdd);
     }
     return result;
 }
@@ -109,6 +133,8 @@ void printAllNums(vector<int> nums, string separator = "", bool br = false){
     }
 }
 void welcome(string appName = ""){cout << "\nwelcome to our " << appName << " app...\n";}
+void printResult(string result = ""){cout << "the result: \"" << result << "\"\n";}
+void printResult(int result){cout << "the result: \"" << result << "\"\n";}
 
 void mathsApps();
 void stringApps();
@@ -131,6 +157,11 @@ void substr();
 void tempConvert();
 void degreeConvert();
 void cleanStr();
+void parseStr();
+void RPS();
+void textToNumber();
+void countWords();
+void NGG();
 int main(){
     vector<string> apps = {
         "break that loop (not an app)",
@@ -144,7 +175,7 @@ int main(){
         bool again = true;
         cout << "choose and app of them:\n";
         for(int i = 0; i < apps.size(); i++){
-            cout << "[" << i << "] " << apps.at(i) << "\n";
+            cout << "[" << i << "]: " << apps.at(i) << "\n";
         }
         int app = msgInput("number of your choice");
         switch(app){
@@ -155,7 +186,8 @@ int main(){
             default: cout << "invalid choice\n--------------\n"; continue;
         }
 
-        if(again){continue;} else {
+        if(again) continue;
+        else {
             cout << "k thx for joining us...";
             break;
         }
@@ -181,7 +213,7 @@ void mathsApps(){
         bool again = true;
         cout << "choose and app of them:\n";
         for(int i = 0; i < apps.size(); i++){
-            cout << "[" << i << "] " << apps.at(i) << "\n";
+            cout << "[" << i << "]: " << apps.at(i) << "\n";
         }
         int app = msgInput("number of your choice");
         switch(app){
@@ -198,7 +230,8 @@ void mathsApps(){
             default: cout << "invalid choice\n--------------\n"; continue;
         }
 
-        if(again){continue;} else {
+        if(again) continue;
+        else {
             cout << "k thx for joining us...";
             break;
         }
@@ -216,14 +249,17 @@ void stringApps(){
         "isNaN",
         "trim",
         "substring",
-        "clean string"
+        "clean string",
+        "parse string",
+        "english to integer",
+        "count words"
     };
     welcome("maths");
     while(true){
         bool again = true;
         cout << "choose and app of them:\n";
         for(int i = 0; i < apps.size(); i++){
-            cout << "[" << i << "] " << apps.at(i) << "\n";
+            cout << "[" << i << "]: " << apps.at(i) << "\n";
         }
         int app = msgInput("number of your choice");
         switch(app){
@@ -237,10 +273,14 @@ void stringApps(){
             case 7: trim(); continue;
             case 8: substr(); continue;
             case 9: cleanStr(); continue;
+            case 10: parseStr(); continue;
+            case 11: textToNumber(); continue;
+            case 12: countWords(); continue;
             default: cout << "invalid choice\n--------------\n"; continue;
         }
 
-        if(again){continue;} else {
+        if(again) continue; 
+        else {
             cout << "k thx for joining us...";
             break;
         }
@@ -250,21 +290,26 @@ void stringApps(){
 void other(){
     vector<string> apps = {
         "break that loop (not an app)",
+        "rock, paper, scissors",
+        "number guessing game"
     };
     welcome("other random");
     while(true){
         bool again = true;
         cout << "choose and app of them:\n";
         for(int i = 0; i < apps.size(); i++){
-            cout << "[" << i << "] " << apps.at(i) << "\n";
+            cout << "[" << i << "]: " << apps.at(i) << "\n";
         }
         int app = msgInput("number of your choice");
         switch(app){
             case 0: again = false; break;
+            case 1: RPS(); continue;
+            case 2: NGG(); continue;
             default: cout << "invalid choice\n--------------\n"; continue;
         }
 
-        if(again){continue;} else {
+        if(again) continue;
+        else {
             cout << "k thx for joining us...";
             break;
         }
@@ -311,7 +356,7 @@ void calculator(){
             cout << "---------\n";
             first = false;
         }
-        cout << "the result: " << result << "\n";
+        printResult(result);
 
         bool status = checkAgain();
         if(status){
@@ -328,12 +373,7 @@ void evenOrOdd(){
     welcome("even or odd");
     while(true){
         int num = msgInput("number");
-        if(num % 2 == 0){
-            cout << num << " is an even number\n";
-        } else {
-            cout << num << " is an odd number\n";
-        }
-
+        cout << num << (num % 2 == 0 ? " is an even number\n" : " is an odd number\n");
         bool status = checkAgain();
         if(status){
             cout << "--------------------\n";
@@ -348,20 +388,16 @@ void evenOrOdd(){
 void primeNumberChecker(){
     welcome("prime number checker");
     while(true){
-        int num = msgInput("number");
+        int number = msgInput("number");
         bool prime = true;
-        for(int i = 2; i < 11; i++){
-            if(num % i == 0){
-                prime = false;
-                break;
-            }
-        }
 
-        if(prime){
-            cout << num << " is a prime number\n";
-        } else {
-            cout << num << "isn't a prime number\n";
+        if(number <= 1) prime = false;
+        else if(number <= 3) prime = true;
+        else if(number % 2 == 0 || number % 3 == 0) prime = false;
+        else for(int i = 5; i * i <= number; i += 6){
+            if(number % i == 0 || number % (i + 2) == 0){prime = false; break;}
         }
+        printResult(prime ? "true" : "false");
 
         bool status = checkAgain();
         if(status){
@@ -378,8 +414,8 @@ void rootCalculator(){
     welcome("root calculator");
     while(true){
         int num = msgInput("number"), rootNum = msgInput("root number");
-        cout << "the " << rootNum << "th root of " << num << " is " 
-        << pow(num, (1 / rootNum)) << "\n";
+        cout << "the " << rootNum << "th root of " << num << " is \"" 
+        << pow(num, (1 / rootNum)) << "\"\n";
 
         bool status = checkAgain();
         if(status){
@@ -403,7 +439,7 @@ void swapCase(){
                 result += upper(inp[i]);
             }
         }
-        cout << "the result: " << result << "\n";
+        printResult(result);
 
         bool status = checkAgain();
         if(status){
@@ -458,7 +494,7 @@ void repeatTxt(){
         }
         if(showSepEnd) result += separator;
 
-        cout << "the result is: " << result << "\n";
+        printResult(result);
         bool status = checkAgain();
         if(status){
             cout << "--------------------\n";
@@ -493,7 +529,7 @@ void zFill(){
             else txt += fill;
         }
 
-        cout << "text after fill: " << txt << "\n";
+        printResult(txt);
         bool status = checkAgain();
         if(status){
             cout << "--------------------\n";
@@ -512,7 +548,7 @@ void stringReverse(){
         string result;
         for(int i = txt.length() - 1; i >= 0; i--) result += txt[i];
         
-        cout << "text after reverse: " << result << "\n";
+        printResult(result);
         bool status = checkAgain();
         if(status){
             cout << "--------------------\n";
@@ -619,7 +655,7 @@ void parseIntApp(){
         for(int i = 0; i < txt.length(); i++){
             if(txt[i] >= '0' && txt[i] <= '9') result += txt[i];
         }
-        cout << "text after parse: " << result << "\n";
+        printResult(result);
 
         bool status = checkAgain();
         if(status){
@@ -643,7 +679,7 @@ void isNaNapp(){
                 break;
             }
         }
-        cout << "the result: " << result << "\n";
+        printResult(result);
 
         bool status = checkAgain();
         if(status){
@@ -679,7 +715,7 @@ void trim(){
                 else break;
             }
         }
-        cout << "the result: \"" << txt << "\"\n";
+        printResult(txt);
 
         bool status = checkAgain();
         if(status){
@@ -708,7 +744,7 @@ void substr(){
                 result += txt[i];
             }
         }
-        cout << "the result: \"" << result << "\"\n";
+        printResult(result);
 
         bool status = checkAgain();
         if(status){
@@ -733,7 +769,7 @@ void tempConvert(){
             cout << "invalid type\n";
             continue;
         }
-        cout << "the result: " << degree << (from == "c" ? "K" : "C") << "\n";
+        cout << "the result: \"" << degree << (from == "c" ? "K" : "C") << "\"\n";
 
         bool status = checkAgain();
         if(status){
@@ -758,7 +794,7 @@ void degreeConvert(){
             cout << "invalid type\n---------\n";
             continue;
         }
-        cout << "the result: " << degree << (from == "d" ? "R" : "D") << "\n";
+        cout << "the result: \"" << degree << (from == "d" ? "R" : "D") << "\"\n";
 
         bool status = checkAgain();
         if(status){
@@ -823,7 +859,7 @@ void cleanStr(){
                 ) result += txt[i];
             }
         }
-        cout << "the result: \"" << result << "\"\n";
+        printResult(result);
 
         bool status = checkAgain();
         if(status){
@@ -835,3 +871,273 @@ void cleanStr(){
         }
     }
 }
+
+void parseStr(){
+    welcome("parse string");
+    while(true){
+        string txt = msgInputStr("text");
+        for(char ch: txt){
+            if(ch == '=') cout << ": ";
+            else if(ch == '&') cout << ",\n";
+            else cout << ch;
+        }
+        cout << "\n";
+
+        bool status = checkAgain();
+        if(status){
+            cout << "--------------------\n";
+            continue;
+        } else {
+            cout << "k thx for using our app...\n\n";
+            break;
+        }
+    }
+}
+
+void textToNumber(){
+    welcome("text to number");
+    map<string, long long> data = {
+        {"zero", 0},
+        {"one", 1},
+        {"two", 2},
+        {"three", 3},
+        {"four", 4},
+        {"five", 5},
+        {"six", 6},
+        {"seven", 7},
+        {"eight", 8},
+        {"nine", 9},
+        {"ten", 10},
+        {"eleven", 11},
+        {"twelve", 12},
+        {"thirteen", 13},
+        {"fourteen", 14},
+        {"fifteen", 15},
+        {"sixteen", 16},
+        {"seventeen", 17},
+        {"eighteen", 18},
+        {"nineteen", 19},
+        {"twenty", 20},
+        {"thirty", 30},
+        {"forty", 40},
+        {"fifty", 50},
+        {"sixty", 60},
+        {"seventy", 70},
+        {"eighty", 80},
+        {"ninety", 90},
+        {"hundred", 100},
+        {"thousand", 1000},
+        {"million", 1000000},
+        {"billion", 1000000000}
+    };
+
+    while(true){
+        string inp = allLower(msgInputStr("english numbers"));
+        replace(inp.begin(), inp.end(), '-', ' ');
+        replace(inp.begin(), inp.end(), ',', ' ');
+        vector<string> splittedText = splitString(inp);
+
+        long long total = 0, curr = 0;
+        bool err = false;
+        for(int i = 0; i < splittedText.size(); i++){
+            if(splittedText.at(i) == "and") continue;
+            if(splittedText.at(i) == "point") break;
+            try {
+                if(data.find(splittedText.at(i)) != data.end()){
+                    long long numericValue = data.find(splittedText.at(i))->second;
+                    if(numericValue >= 100){
+                        if(curr == 0) curr = 1;
+                        if(numericValue == 100) curr *= 100;
+                        else {
+                            total += curr * numericValue;
+                            curr = 0;
+                        }
+                    } else curr +=numericValue;
+                } else {
+                    string errorTxt = "\"" + splittedText.at(i) + "\" is undefined";
+                    throw invalid_argument(errorTxt);
+                }
+            } catch (const exception& e){cerr << "error: " << e.what() << "\n"; err = true; break;}
+        }
+        if(!err) printResult(total + curr);
+        else cout << "";
+
+        bool status = checkAgain();
+        if(status){
+            cout << "--------------------\n";
+            continue;
+        } else {
+            cout << "k thx for using our app...\n\n";
+            break;
+        }
+    }
+}
+
+void RPS(){
+    welcome("rock, paper, scissors");
+    map<string, int> score = {
+        {"wins", 0},
+        {"loses", 0},
+        {"draws", 0}
+    };
+    while(true){
+        srand(time(nullptr));
+        string inp = msgInputStr("game (rock, paper, scissors)");
+        vector<string> games = {"rock", "paper", "scissors"};
+        map<string, string> wins = {
+            {"rock", "scissors"},
+            {"paper", "rock"},
+            {"scissors", "paper"}
+        };
+
+        if(find(games.begin(), games.end(), inp) == games.end()) cerr << "error: invalid input\n";
+        else {
+            string botChoice = games.at(rand() % games.size());
+            cout << "bot choice: " << botChoice << "\n";
+
+            if(inp == botChoice){
+                cout << "draw\n";
+                score["draws"]++;
+            } else if(wins[inp] == botChoice){
+                cout << "you win\n";
+                score["wins"]++;
+            } else {
+                cout << "you lose\n";
+                score["loses"]++;
+            }
+        }
+
+        bool status = checkAgain();
+        if(status){
+            cout << "--------------------\n";
+            continue;
+        } else {
+            cout << "--------------------\n";
+            cout << "score:\n";
+            cout << "wins: " << score["wins"] << "\n";
+            cout << "loses: " << score["loses"] << "\n";
+            cout << "draws: " << score["draws"] << "\n";
+            cout << "--------------------\n";
+            cout << "k thx for using our app...\n\n";
+            break;
+        }
+    }
+}
+
+void countWords(){
+    welcome("count words");
+    while(true){
+        string txt = msgInputStr("text");
+        vector<string> words = splitString(txt, true);
+        printResult(words.size());
+
+        bool status = checkAgain();
+        if(status){
+            cout << "--------------------\n";
+            continue;
+        } else {
+            cout << "k thx for using our app...\n\n";
+            break;
+        }
+    }
+}
+
+int NGGTemplate(int limit, int attempt, string diff);
+void NGG(){
+    welcome("number guessing game");
+    vector<string> diffs = {
+        "break the loop (not an app)", 
+        "easy", 
+        "medium", 
+        "hard", 
+        "extreme", 
+        "impossible", 
+        "one-time", 
+        "custom"
+    };
+    map<string, int> score = {
+        {"easy", 0},
+        {"medium", 0},
+        {"hard", 0},
+        {"extreme", 0},
+        {"impossible", 0},
+        {"one-time", 0},
+        {"custom", 0}
+    };
+
+    while(true){
+        cout << "choose a difficulty of them:\n";
+        for(int i = 0; i < diffs.size(); i++){
+            cout << "[" << i << "]: " << diffs.at(i) << "\n";
+        }
+
+        int choice = msgInput("number of your choice");
+        bool again = true;
+        switch(choice){
+            case 0: again = false; break;
+            case 1: score["easy"] += NGGTemplate(10, 4, "easy"); break;
+            case 2: score["medium"] += NGGTemplate(100, 8, "medium"); break;
+            case 3: score["hard"] += NGGTemplate(1000, 12, "hard"); break;
+            case 4: score["extreme"] += NGGTemplate(1000, 10, "extreme"); break;
+            case 5: score["impossible"] += NGGTemplate(100, 4, "impossible"); break;
+            case 6: score["one-time"] += NGGTemplate(10, 1, "one-time"); break;
+            case 7:
+                int limit = msgInput("limit"), attempts = msgInput("attempts");
+                score["custom"] += NGGTemplate(limit, attempts, "custom");
+                break;
+            default: cout << "invalid choice\n--------------\n"; continue;
+        }
+
+        if(again){
+            bool status = checkAgain();
+            if(status){
+                cout << "--------------------\n";
+                continue;
+            } else {
+                cout << "--------------------\n";
+                cout << "score:\n";
+                cout << "easy: " << score["easy"] << "\n";
+                cout << "medium: " << score["medium"] << "\n";
+                cout << "hard: " << score["hard"] << "\n";
+                cout << "hard: " << score["hard"] << "\n";
+                cout << "hard: " << score["hard"] << "\n";
+                cout << "hard: " << score["hard"] << "\n";
+                cout << "--------------------\n";
+                cout << "k thx for using our app...\n\n";
+                break;
+            }
+        } else {
+            cout << "k thx for joining us...";
+            break;
+        }
+    }
+}
+
+int NGGTemplate(int limit, int attempts, string diff){
+    srand(time(0));
+    int randomNum = rand() % (limit + 1), score = 0;
+
+    cout << "welcome to " << diff << "  level...\n";
+    cout << "rules:\n";
+    cout << "1. the limit is " << limit << "\n";
+    cout << "1. you have " << attempts << " attempt" << (attempts > 1 ? "s" : "") << " only\n\n";
+    while(attempts != 0){
+        int choice = msgInput("number");
+        if(choice == randomNum){
+            score++;
+            cout << "you win\n";
+            cout << "--------------------\n";
+            break;
+        } else {
+            attempts--;
+            if(choice > randomNum) cout << "lower\n";
+            else cout << "higher\n";
+            cout << "you have " << attempts << " only\n";
+            cout << "--------------------\n";
+        }
+    }
+    if(attempts == 0) cout << "you lose\n--------------\n";
+    return score;
+}
+
+// * I wanna add some functions here but I don't remember them...
