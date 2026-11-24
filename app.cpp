@@ -36,14 +36,14 @@ string msgInputStr(string msg){
     return inp;
 }
 
-string trimStr(string txt, char trimChar = ' '){
+string trimStr(string txt, char ch = ' '){
     string result = txt;
     for(int i = 0; i < result.length(); i++){
-        if(result[0] == trimChar) result.erase(i, 1);
+        if(result[0] == ch) result.erase(i, 1);
         else break;
     } 
     for(int i = result.length() - 1; i >= 0; i--){
-        if(result[0] == trimChar) result.erase(i, 1);
+        if(result[0] == ch) result.erase(i, 1);
         else break;
     } return result;
 }

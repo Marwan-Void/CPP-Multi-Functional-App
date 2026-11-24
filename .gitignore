@@ -1,5 +1,6 @@
-# VS Code Settings
+# Other Folders
 .vscode/
+boostDesk/
 
 # Executables & Compiled files
 *.exe
